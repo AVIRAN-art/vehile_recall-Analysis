@@ -8,6 +8,9 @@ st.set_page_config(
 )
 
 st.title("Vehicle Recall Analysis")
+
+st.caption("Cread by Aviran Hainhorn")
+
 st.write(
     "Comparison of unique recall campaigns for selected SUV models, "
     "model years 2021–2025"
