@@ -192,3 +192,112 @@ st.line_chart(
     y="UniqueRecalls"
 )
 
+st.subheader("Campaigns Affecting Multiple Model Years")
+
+st.write(
+    "This analysis examines how many recall campaigns affected "
+    "more than one model year."
+)
+
+# Count how many model years are affected by each campaign
+campaign_year_counts_df = (
+    research_df
+    .groupby([
+        "Make",
+        "Model",
+        "NHTSACampaignNumber"
+    ])
+    ["ModelYear"]
+    .nunique()
+    .reset_index(name="AffectedModelYears")
+)
+
+# Mark campaigns that affect more than one model year
+campaign_year_counts_df["IsMultiYear"] = (
+    campaign_year_counts_df["AffectedModelYears"] > 1
+)
+
+# Create a summary for each vehicle model
+multi_year_summary_df = (
+    campaign_year_counts_df
+    .groupby(["Make", "Model"])
+    .agg(
+        TotalUniqueCampaigns=(
+            "NHTSACampaignNumber",
+            "nunique"
+        ),
+        MultiYearCampaigns=(
+            "IsMultiYear",
+            "sum"
+        ),
+        MultiYearShare=(
+            "IsMultiYear",
+            "mean"
+        )
+    )
+    .reset_index()
+)
+
+# Convert the share to percentage
+multi_year_summary_df["MultiYearShare"] = (
+    multi_year_summary_df["MultiYearShare"] * 100
+).round(0)
+
+# Create a display copy with clearer column names
+multi_year_display_df = multi_year_summary_df.copy()
+
+multi_year_display_df = multi_year_display_df.rename(
+    columns={
+        "Make": "Make",
+        "Model": "Model",
+        "TotalUniqueCampaigns": "Total Unique Campaigns",
+        "MultiYearCampaigns": "Multi-Year Campaigns",
+        "MultiYearShare": "Multi-Year Campaign Share"
+    }
+)
+
+# Add the percentage symbol for the displayed table
+multi_year_display_df["Multi-Year Campaign Share"] = (
+    multi_year_display_df["Multi-Year Campaign Share"]
+    .astype(int)
+    .astype(str)
+    + "%"
+)
+
+st.dataframe(
+    multi_year_display_df,
+    hide_index=True,
+    width="stretch"
+)
+
+# Create a chart
+fig3 = plt.figure(figsize=(10, 5))
+
+sns.barplot(
+    data=multi_year_summary_df,
+    x="Model",
+    y="MultiYearShare",
+    hue="Make",
+    errorbar=None
+)
+
+plt.title("Share of Campaigns Affecting Multiple Model Years")
+plt.xlabel("Vehicle Model")
+plt.ylabel("Multi-Year Campaign Share (%)")
+plt.ylim(0, 100)
+plt.tight_layout()
+
+st.pyplot(fig3)
+
+st.write(
+    """
+    Toyota Highlander had the lowest total number of unique recall
+    campaigns, but the highest proportion of campaigns affecting
+    multiple model years.
+
+    This suggests that Toyota's smaller group of recall campaigns
+    tended to cover a broader range of the selected model years.
+    This does not necessarily indicate greater severity or lower
+    vehicle safety.
+    """
+)
