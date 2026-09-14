@@ -154,8 +154,6 @@ st.write(
     - BMW X5 had 25 unique recall campaigns.
     - Toyota Highlander had the lowest number: 12.
     - Ford Explorer had the highest yearly count in every model year examined.
-    - Recall campaigns may affect more than one model year, so yearly counts
-      should not be added together to calculate the overall unique total.
     """
 )
 
