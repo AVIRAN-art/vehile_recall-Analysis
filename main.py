@@ -150,11 +150,7 @@ plt.tight_layout()
 
 st.pyplot(fig2)
 
-st.subheader("Key Findings")
 
-
-
-st.subheader("Key Findings")
 
 st.subheader("Key Findings")
 
@@ -169,28 +165,7 @@ st.write(
     """
 )
 
-st.subheader("Explore a Vehicle Model")
 
-selected_model = st.selectbox(
-    "Choose a vehicle model:",
-    recalls_by_year_df["Model"].unique()
-)
-
-selected_model_df = recalls_by_year_df[
-    recalls_by_year_df["Model"] == selected_model
-]
-
-st.dataframe(
-    selected_model_df,
-    hide_index=True,
-    width="stretch"
-)
-
-st.line_chart(
-    selected_model_df,
-    x="ModelYear",
-    y="UniqueRecalls"
-)
 
 st.subheader("Campaigns Affecting Multiple Model Years")
 
