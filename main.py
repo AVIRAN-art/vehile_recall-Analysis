@@ -143,12 +143,6 @@ sns.lineplot(
     marker="o"
 )
 
-plt.title("Unique Recall Campaigns by Model Year")
-plt.xlabel("Model Year")
-plt.ylabel("Number of Unique Recall Campaigns")
-plt.tight_layout()
-
-st.pyplot(fig2)
 
 
 
